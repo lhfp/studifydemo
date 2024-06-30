@@ -2,18 +2,42 @@ package com.lhfp.studifydemo.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.lhfp.studifydemo.R
+
+val playFairFont = FontFamily(
+    Font(R.font.playfairdisplay_regular, FontWeight.Normal),
+    Font(R.font.playfairdisplay_black, FontWeight.Black),
+    Font(R.font.playfairdisplay_bold, FontWeight.Bold),
+    Font(R.font.playfairdisplay_semi_bold, FontWeight.SemiBold),
+    Font(R.font.playfairdisplay_extra_bold, FontWeight.ExtraBold),
+    Font(R.font.playfairdisplay_medium, FontWeight.Medium)
+)
+
+val robotoFont = FontFamily(
+    Font(R.font.roboto_regular, FontWeight.Normal),
+    Font(R.font.roboto_black, FontWeight.Black),
+    Font(R.font.roboto_bold, FontWeight.Bold),
+    Font(R.font.roboto_thin, FontWeight.Thin),
+    Font(R.font.roboto_light, FontWeight.Light)
+)
 
 // Set of Material typography styles to start with
 val Typography = Typography(
     bodyLarge = TextStyle(
-        fontFamily = FontFamily.Default,
+        fontFamily = robotoFont,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
         lineHeight = 24.sp,
         letterSpacing = 0.5.sp
+    ),
+    titleLarge = TextStyle(
+        fontFamily = playFairFont,
+        fontWeight = FontWeight.Bold,
+        fontSize = 22.sp
     )
     /* Other default text styles to override
     titleLarge = TextStyle(
