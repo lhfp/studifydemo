@@ -60,8 +60,11 @@ import com.lhfp.studifydemo.ui.common.SearchBar
 import com.lhfp.studifydemo.ui.home.HomeScreen
 import com.lhfp.studifydemo.ui.theme.StudifyDemoTheme
 import com.lhfp.studifydemo.ui.theme.robotoFont
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -184,7 +187,7 @@ class MainActivity : ComponentActivity() {
                             fadeOut(animationSpec = tween(300))
                         }
                     ) {
-                        composable<NavHome> { Text(text = "Home screen") }
+                        composable<NavHome> { HomeScreen() }
                         composable<NavQuiz> { Text(text = "Quiz screen") }
                         composable<NavStats> { Text(text = "Stats screen") }
                         composable<NavProfile> { Text(text = "Profile screen") }

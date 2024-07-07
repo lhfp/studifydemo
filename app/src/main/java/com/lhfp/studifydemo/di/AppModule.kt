@@ -7,6 +7,7 @@ import com.lhfp.studifydemo.data.repository.NoteRepositoryImpl
 import com.lhfp.studifydemo.data.repository.SubjectRepositoryImpl
 import com.lhfp.studifydemo.domain.repository.NoteRepository
 import com.lhfp.studifydemo.domain.repository.SubjectRepository
+import com.lhfp.studifydemo.ui.home.HomeViewModel
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
