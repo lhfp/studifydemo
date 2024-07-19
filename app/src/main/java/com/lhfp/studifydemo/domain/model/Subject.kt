@@ -12,3 +12,5 @@ data class Subject(
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long
 )
+
+class InvalidSubjectException(message: String): Exception(message)

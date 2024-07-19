@@ -24,6 +24,7 @@ import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.AutoAwesome
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.QueryStats
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
@@ -33,10 +34,15 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -57,10 +63,12 @@ import com.lhfp.studifydemo.ui.common.NavProfile
 import com.lhfp.studifydemo.ui.common.NavQuiz
 import com.lhfp.studifydemo.ui.common.NavStats
 import com.lhfp.studifydemo.ui.common.SearchBar
-import com.lhfp.studifydemo.ui.home.HomeScreen
+import com.lhfp.studifydemo.ui.home.components.AddSubjectBottomSheet
+import com.lhfp.studifydemo.ui.home.components.HomeScreen
 import com.lhfp.studifydemo.ui.theme.StudifyDemoTheme
 import com.lhfp.studifydemo.ui.theme.robotoFont
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -72,6 +80,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun MainScreen() {
         val isInitInDarkTheme = isSystemInDarkTheme()
@@ -110,6 +119,13 @@ class MainActivity : ComponentActivity() {
             )
 
             val navController = rememberNavController()
+            val sheetState = rememberModalBottomSheetState(
+                skipPartiallyExpanded = true,
+                confirmValueChange = { it != SheetValue.PartiallyExpanded }
+            )
+            val scope = rememberCoroutineScope()
+            var showBottomSheet by rememberSaveable { mutableStateOf(false) }
+
             Scaffold(
                 bottomBar = {
                     NavigationBar(
@@ -153,9 +169,9 @@ class MainActivity : ComponentActivity() {
                 floatingActionButton = {
                     FloatingActionButton(
                         onClick = {
-                            // TODO
+                            showBottomSheet = true
                         },
-                        containerColor = MaterialTheme.colorScheme.primaryContainer
+                        containerColor = MaterialTheme.colorScheme.surface
                     ) {
                         Icon(
                             imageVector = Icons.Filled.Add,
@@ -192,6 +208,15 @@ class MainActivity : ComponentActivity() {
                         composable<NavStats> { Text(text = "Stats screen") }
                         composable<NavProfile> { Text(text = "Profile screen") }
                     }
+
+                    // Add Subject bottom sheet
+                    AddSubjectBottomSheet(
+                        isSheetVisible = showBottomSheet,
+                        sheetState = sheetState,
+                        onDismiss = {
+                            scope.launch { sheetState.hide() }
+                                .invokeOnCompletion { showBottomSheet = false }
+                        })
                 }
             }
         }

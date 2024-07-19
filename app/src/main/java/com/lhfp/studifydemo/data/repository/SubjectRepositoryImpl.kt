@@ -7,6 +7,8 @@ import com.lhfp.studifydemo.domain.model.Subject
 import com.lhfp.studifydemo.domain.model.SubjectWithNotes
 import com.lhfp.studifydemo.domain.repository.SubjectRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onEach
 
 class SubjectRepositoryImpl(
     private val dao: SubjectDao
@@ -41,6 +43,10 @@ class SubjectRepositoryImpl(
         dao.updateSubject(subjectWithNotes.subject)
 
         dao.insertNotes(subjectWithNotes.notes)
+    }
+
+    override fun getAllSubjectWithNotes(): Flow<List<SubjectWithNotes>> {
+        return dao.getAllSubjectWithNotes()
     }
 
     override suspend fun insertNotes(notes: List<Note>) {

@@ -34,6 +34,10 @@ interface SubjectDao {
     @Query("SELECT * FROM subject WHERE subjectId = :subjectId")
     suspend fun getSubjectWithNotes(subjectId: Int): List<SubjectWithNotes>
 
+    @Transaction
+    @Query("SELECT * FROM subject")
+    fun getAllSubjectWithNotes(): Flow<List<SubjectWithNotes>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertNotes(notes: List<Note>)
 

@@ -21,6 +21,8 @@ interface SubjectRepository {
 
     suspend fun updateSubjectWithNotes(subjectWithNotes: SubjectWithNotes)
 
+    fun getAllSubjectWithNotes(): Flow<List<SubjectWithNotes>>
+
     suspend fun insertNotes(notes: List<Note>)
 
     suspend fun deleteNote(note: Note)

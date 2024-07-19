@@ -1,10 +1,18 @@
 <resources>
     <!--App commons -->
     <string name="app_name">StudifyDemo</string>
+    <string name="done">Done</string>
+    <string name="add">Add</string>
+    <string name="cancel">Cancel</string>
 
     <!-- Common -->
     <string name="main_home">Home</string>
     <string name="main_quiz">Quiz</string>
     <string name="main_stats">Stats</string>
     <string name="main_profile">Profile</string>
+
+    <!-- Subject -->
+    <string name="new_subject_title">New Subject</string>
+    <string name="add_subject_name_field">Name</string>
+    <string name="add_subject_color_field">Select a color:</string>
 </resources>

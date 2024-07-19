@@ -7,7 +7,11 @@ import com.lhfp.studifydemo.data.repository.NoteRepositoryImpl
 import com.lhfp.studifydemo.data.repository.SubjectRepositoryImpl
 import com.lhfp.studifydemo.domain.repository.NoteRepository
 import com.lhfp.studifydemo.domain.repository.SubjectRepository
-import com.lhfp.studifydemo.ui.home.HomeViewModel
+import com.lhfp.studifydemo.domain.usecases.subjects.AddSubject
+import com.lhfp.studifydemo.domain.usecases.subjects.GetSubjects
+import com.lhfp.studifydemo.domain.usecases.subjects.GetSubjectsWithNotes
+import com.lhfp.studifydemo.domain.usecases.subjects.RemoveSubject
+import com.lhfp.studifydemo.domain.usecases.subjects.SubjectsUseCases
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -38,5 +42,16 @@ object AppModule {
     @Singleton
     fun provideNoteRepository(db: StudifyDatabase): NoteRepository {
         return NoteRepositoryImpl(db.noteDao)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSubjectsUseCase(repository: SubjectRepository): SubjectsUseCases {
+        return SubjectsUseCases(
+            getSubjects = GetSubjects(repository),
+            addSubject = AddSubject(repository),
+            removeSubject = RemoveSubject(repository),
+            getSubjectsWithNotes = GetSubjectsWithNotes(repository)
+        )
     }
 }
