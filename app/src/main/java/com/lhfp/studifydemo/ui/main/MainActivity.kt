@@ -9,10 +9,8 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -27,7 +25,6 @@ import androidx.compose.material.icons.outlined.QueryStats
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -41,30 +38,27 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.lhfp.studifydemo.R
 import com.lhfp.studifydemo.ui.common.BottomNavigationBarItem
-import com.lhfp.studifydemo.ui.common.Logo
+import com.lhfp.studifydemo.ui.main.components.Logo
 import com.lhfp.studifydemo.ui.common.NavHome
 import com.lhfp.studifydemo.ui.common.NavProfile
 import com.lhfp.studifydemo.ui.common.NavQuiz
 import com.lhfp.studifydemo.ui.common.NavStats
-import com.lhfp.studifydemo.ui.common.SearchBar
+import com.lhfp.studifydemo.ui.main.components.SettingsButton
 import com.lhfp.studifydemo.ui.home.components.AddSubjectBottomSheet
-import com.lhfp.studifydemo.ui.home.components.HomeScreen
+import com.lhfp.studifydemo.ui.main.components.StudifyTopBar
 import com.lhfp.studifydemo.ui.theme.StudifyDemoTheme
 import com.lhfp.studifydemo.ui.theme.robotoFont
 import dagger.hilt.android.AndroidEntryPoint
@@ -181,6 +175,9 @@ class MainActivity : ComponentActivity() {
                     }
                 },
                 floatingActionButtonPosition = FabPosition.End,
+                topBar = {
+                    StudifyTopBar(logo = { Logo() }, rightSide = { SettingsButton() })
+                }
             ) {
                 Column(
                     modifier = Modifier
@@ -188,11 +185,6 @@ class MainActivity : ComponentActivity() {
                         .background(MaterialTheme.colorScheme.background)
                         .padding(it)
                 ) {
-                    TopBar(Modifier.padding(15.dp))
-                    HorizontalDivider(
-                        thickness = 1.dp,
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
                     NavHost(
                         navController = navController,
                         startDestination = NavHome,
@@ -203,7 +195,9 @@ class MainActivity : ComponentActivity() {
                             fadeOut(animationSpec = tween(300))
                         }
                     ) {
-                        composable<NavHome> { HomeScreen() }
+                        composable<NavHome> {
+                            //HomeScreen()
+                        }
                         composable<NavQuiz> { Text(text = "Quiz screen") }
                         composable<NavStats> { Text(text = "Stats screen") }
                         composable<NavProfile> { Text(text = "Profile screen") }
@@ -219,14 +213,6 @@ class MainActivity : ComponentActivity() {
                         })
                 }
             }
-        }
-    }
-
-    @Composable
-    fun TopBar(modifier: Modifier = Modifier) {
-        Box(modifier = modifier.fillMaxWidth()) {
-            Logo(Modifier.align(Alignment.CenterStart))
-            SearchBar(Modifier.align(Alignment.CenterEnd))
         }
     }
 

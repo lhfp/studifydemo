@@ -7,8 +7,6 @@ import com.lhfp.studifydemo.domain.model.Subject
 import com.lhfp.studifydemo.domain.model.SubjectWithNotes
 import com.lhfp.studifydemo.domain.repository.SubjectRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.onEach
 
 class SubjectRepositoryImpl(
     private val dao: SubjectDao

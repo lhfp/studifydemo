@@ -7,31 +7,35 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 
 private val DarkColorScheme = darkColorScheme(
-    primary = OxfordBlue_A100,
-    onPrimary = OxfordBlue_A100,
-    secondary = OxfordBlue_300,
-    onSecondary = OxfordBlue_400,
-    tertiary = PennRed_500,
-    background = OxfordBlue_900,
+    primary = OxfordBlue_A200,
+    onPrimary = PaleWhite,
+    secondary = HighlightOrange_500,
+    onSecondary = PaleBlack,
+    tertiary = OxfordBlue_400,
+    onTertiary = OxfordBlue_A100,
+    background = OxfordBlue_800,
     onBackground = PaleWhite,
     primaryContainer = OxfordBlue_400,
     onPrimaryContainer = PaleWhite,
     surface = OxfordBlue_500,
-    onSurface = OxfordBlue_600
+    onSurface = OxfordBlue_600,
+    onError = PennRed_300
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = OxfordBlue_A100,
+    primary = OxfordBlue_A200,
     onPrimary = PaleWhite,
-    secondary = OxfordBlue_300,
-    onSecondary = OxfordBlue_400,
-    tertiary = PennRed_500,
+    secondary = HighlightOrange_500,
+    onSecondary = PaleBlack,
+    tertiary = OxfordBlue_400,
+    onTertiary = OxfordBlue_A100,
     background = PaleWhite,
     onBackground = PaleBlack,
     primaryContainer = PaleWhite,
-    onPrimaryContainer = OxfordBlue_900,
-    surface = OxfordBlue_500,
-    onSurface = OxfordBlue_A100
+    onPrimaryContainer = OxfordBlue_800,
+    surface = OxfordBlue_A100,
+    onSurface = OxfordBlue_A400,
+    onError = PennRed_300,
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
