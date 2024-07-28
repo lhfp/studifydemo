@@ -7,6 +7,7 @@
 
     <!-- Common -->
     <string name="main_home">Home</string>
+    <string name="main_subjects">Subjects</string>
     <string name="main_quiz">Quiz</string>
     <string name="main_stats">Stats</string>
     <string name="main_profile">Profile</string>

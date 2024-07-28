@@ -7,35 +7,34 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 
 private val DarkColorScheme = darkColorScheme(
-    primary = OxfordBlue_A200,
-    onPrimary = PaleWhite,
-    secondary = HighlightOrange_500,
-    onSecondary = PaleBlack,
-    tertiary = OxfordBlue_400,
-    onTertiary = OxfordBlue_A100,
-    background = OxfordBlue_800,
-    onBackground = PaleWhite,
-    primaryContainer = OxfordBlue_400,
-    onPrimaryContainer = PaleWhite,
-    surface = OxfordBlue_500,
-    onSurface = OxfordBlue_600,
-    onError = PennRed_300
+    primary = DarkPrimary,
+    onPrimary = DarkOnPrimary,
+    secondary = DarkSecondary,
+    onSecondary = DarkOnSecondary,
+    tertiary = DarkTertiary,
+    onTertiary = DarkOnTertiary,
+    primaryContainer = DarkPrimaryContainer,
+    onPrimaryContainer = DarkOnPrimaryContainer,
+    surface = DarkSurface,
+    onSurface = DarkOnSurface,
+    error = DarkError,
+    onError = DarkOnError
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = OxfordBlue_A200,
-    onPrimary = PaleWhite,
-    secondary = HighlightOrange_500,
-    onSecondary = PaleBlack,
-    tertiary = OxfordBlue_400,
-    onTertiary = OxfordBlue_A100,
-    background = PaleWhite,
-    onBackground = PaleBlack,
-    primaryContainer = PaleWhite,
-    onPrimaryContainer = OxfordBlue_800,
-    surface = OxfordBlue_A100,
-    onSurface = OxfordBlue_A400,
-    onError = PennRed_300,
+    primary = LightPrimary,
+    onPrimary = LightOnPrimary,
+    secondary = LightSecondary,
+    onSecondary = LightOnSecondary,
+    tertiary = LightTertiary,
+    onTertiary = LightOnTertiary,
+    primaryContainer = LightPrimaryContainer,
+    onPrimaryContainer = LightOnPrimaryContainer,
+    surface = LightSurface,
+    onSurface = LightOnSurface,
+    error = LightError,
+    onError = LightOnError
+)
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
@@ -45,7 +44,6 @@ private val LightColorScheme = lightColorScheme(
     onTertiary = Color.White,
     onSurface = Color(0xFF1C1B1F),
     */
-)
 
 @Composable
 fun StudifyDemoTheme(

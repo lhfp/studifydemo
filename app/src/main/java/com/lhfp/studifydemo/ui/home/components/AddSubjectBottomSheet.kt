@@ -60,19 +60,21 @@ fun AddSubjectBottomSheet(
     isSheetVisible: Boolean,
     sheetState: SheetState,
     onDismiss: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: HomeViewModel = hiltViewModel()
 ) {
     if (isSheetVisible) {
         ModalBottomSheet(
             onDismissRequest = { onDismiss() },
-            containerColor = MaterialTheme.colorScheme.surface,
             sheetState = sheetState,
-            contentColor = MaterialTheme.colorScheme.onSurface,
             shape = RoundedCornerShape(10.dp),
             dragHandle = null,
             scrimColor = Color.Black.copy(alpha = .5f),
             content = {
-                AddSubjectView(modifier, onDismiss = { onDismiss() })
+                AddSubjectView(modifier) {
+                    viewModel.addSubject(it)
+                    onDismiss()
+                }
             },
             modifier = Modifier.fillMaxHeight(0.7f)
         )
@@ -82,8 +84,7 @@ fun AddSubjectBottomSheet(
 @Composable
 fun AddSubjectView(
     modifier: Modifier = Modifier,
-    onDismiss: () -> Unit,
-    viewModel: HomeViewModel = hiltViewModel()
+    onClick: (subject: Subject) -> Unit
 ) {
     StudifyDemoTheme()
     {
@@ -94,7 +95,7 @@ fun AddSubjectView(
         Box(
             modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.primaryContainer)
+                .background(MaterialTheme.colorScheme.onSecondary)
                 .padding(top = 15.dp, start = 15.dp)
         ) {
             Column(
@@ -150,27 +151,24 @@ fun AddSubjectView(
 
                 Button(
                     onClick = {
-                        viewModel.addSubject(
+                        onClick(
                             Subject(
                                 name = subjectNameText,
                                 color = selectedColor,
                                 updatedAt = System.currentTimeMillis()
                             )
                         )
-                        onDismiss()
                     },
                     modifier = Modifier
                         .align(Alignment.End)
-                        .padding(end = 20.dp),
+                        .padding(end = 25.dp),
                     content = {
                         Text(
-                            text = stringResource(id = R.string.add),
-                            color = Color.White
+                            text = stringResource(id = R.string.add)
                         )
                         Icon(
                             Icons.Filled.Add,
-                            contentDescription = "",
-                            tint = Color.White
+                            contentDescription = ""
                         )
                     }
                 )
@@ -246,5 +244,5 @@ fun ColorSelector(
 @Preview(name = "LightMode", showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 private fun AddSubjectViewPreview() {
-    AddSubjectView(onDismiss = {})
+    AddSubjectView() {}
 }

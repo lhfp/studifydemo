@@ -35,7 +35,6 @@ fun StudifyTopBar(
             verticalAlignment = Alignment.CenterVertically,
             modifier = modifier
                 .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.surface)
                 .padding(5.dp)
         ) {
             logo()

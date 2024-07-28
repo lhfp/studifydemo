@@ -3,6 +3,7 @@ package com.lhfp.studifydemo.ui.main.components
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -25,7 +26,7 @@ fun Logo(modifier: Modifier = Modifier) {
             fontFamily = playFairFont,
             fontSize = 25.sp,
             fontWeight = FontWeight.ExtraBold,
-            color = Color.White,
+            color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier
                 .align(Alignment.Center)
                 .padding(10.dp)

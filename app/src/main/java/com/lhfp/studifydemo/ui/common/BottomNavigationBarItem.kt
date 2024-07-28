@@ -20,4 +20,4 @@ object NavQuiz
 object NavStats
 
 @Serializable
-object NavProfile
+object NavSubjects

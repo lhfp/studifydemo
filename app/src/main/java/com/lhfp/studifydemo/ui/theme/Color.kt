@@ -2,40 +2,46 @@ package com.lhfp.studifydemo.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// Red
-val PennRed_200 = Color(0xFFC98A86)
-val PennRed_300 = Color(0xFFB35B55)
-val PennRed_400 = Color(0xFFA23730)
-val PennRed_500 = Color(0xFF92140C)
-val PennRed_600 = Color(0xFF8A120A)
+// Material Builder Colors
+val LightPrimary = Color(0XFF415f91)
+val LightOnPrimary = Color(0xFFFFFFFF)
+val LightPrimaryContainer = Color(0xFFD6E3FF)
+val LightOnPrimaryContainer = Color(0xFF001B3E)
 
-// Blue
-val DarkBlue = Color(0xFF01172F)
-val OxfordBlue = Color(0xFF0A122A)
+val LightSecondary = Color(0xFF565F71)
+val LightOnSecondary = Color(0xFFFFFFFF)
+val LightSecondaryContainer = Color(0xFFDAE2F9)
+val LightOnSecondaryContainer = Color(0xFF131C2B)
 
-val OxfordBlue_300 = Color(0xFF54596A)
-val OxfordBlue_400 = Color(0xFF2F364A)
-val OxfordBlue_500 = Color(0xFF0A122A)
-val OxfordBlue_600 = Color(0xFF091025)
-val OxfordBlue_800 = Color(0xFF050A19)
-val OxfordBlue_900 = Color(0xFF03050F)
-val OxfordBlue_A100 = Color(0xFF5274FF)
-val OxfordBlue_A200 = Color(0xFF1F4BFF)
-val OxfordBlue_A400 = Color(0xFF002EEB)
+val LightTertiary = Color(0xFF705575)
+val LightOnTertiary = Color(0xFFffffff)
+val LightTertiaryContainer = Color(0xFFFAD8FD)
+val LightOnTertiaryContainer = Color(0xFF28132E)
 
-// Orange
-val HighlightOrange_100 = Color(0xFFFFDFB4)
-val HighlightOrange_200 = Color(0xFFFFCA82)
-val HighlightOrange_300 = Color(0xFFFFB550)
-val HighlightOrange_400 = Color(0xFFFFA52B)
-val HighlightOrange_500 = Color(0xFFFF9505)
-val HighlightOrange_600 = Color(0xFFFF8D04)
-val HighlightOrange_700 = Color(0xFFFF8204)
-val HighlightOrange_800 = Color(0xFFFF7803)
-val HighlightOrange_900 = Color(0xFFFF6701)
+val LightError = Color(0xFFBA1A1A)
+val LightOnError = Color(0xFFFFFFFF)
 
-val PaleWhite = Color(0xFFF7F7F7)
+val LightSurface = Color(0xFFF9F9FF)
+val LightOnSurface = Color(0xFF191C20)
 
+// Dark
+val DarkPrimary = Color(0xFFaac7ff)
+val DarkOnPrimary = Color(0xFF0a305f)
+val DarkPrimaryContainer = Color(0xFF284777)
+val DarkOnPrimaryContainer = Color(0xFFd6e3ff)
 
-val CyanBlue = Color(0xFF246A73)
-val PaleBlack = Color(0xFF272727)
+val DarkSecondary = Color(0xFFbec6dc)
+val DarkOnSecondary = Color(0xFF283141)
+val DarkSecondaryContainer = Color(0xFF3e4759)
+val DarkOnSecondaryContainer = Color(0xFFdae2f9)
+
+val DarkTertiary = Color(0xFFddbce0)
+val DarkOnTertiary = Color(0xFF3f2844)
+val DarkTertiaryContainer = Color(0xFF573e5c)
+val DarkOnTertiaryContainer = Color(0xFFfad8fd)
+
+val DarkError = Color(0xFFffb4ab)
+val DarkOnError = Color(0xFF690005)
+
+val DarkSurface = Color(0xFF111318)
+val DarkOnSurface = Color(0xFFe2e2e9)
