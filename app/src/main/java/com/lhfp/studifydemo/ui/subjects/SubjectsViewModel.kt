@@ -1,4 +1,4 @@
-package com.lhfp.studifydemo.ui.home
+package com.lhfp.studifydemo.ui.subjects
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -16,10 +16,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor (private val subjectsUseCases: SubjectsUseCases) : ViewModel() {
+class SubjectsViewModel @Inject constructor (private val subjectsUseCases: SubjectsUseCases) : ViewModel() {
 
-    private val _state = mutableStateOf(HomeState())
-    val state: State<HomeState> = _state
+    private val _state = mutableStateOf(SubjectsState())
+    val state: State<SubjectsState> = _state
 
     private var getSubjectsJob: Job? = null
 

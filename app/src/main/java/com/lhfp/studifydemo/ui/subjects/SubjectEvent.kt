@@ -1,4 +1,4 @@
-package com.lhfp.studifydemo.ui.home
+package com.lhfp.studifydemo.ui.subjects
 
 import com.lhfp.studifydemo.domain.model.Subject
 import com.lhfp.studifydemo.domain.util.SubjectOrder

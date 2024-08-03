@@ -1,4 +1,4 @@
-package com.lhfp.studifydemo.ui.home.components
+package com.lhfp.studifydemo.ui.subjects.components
 
 import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
@@ -49,7 +49,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.lhfp.studifydemo.R
 import com.lhfp.studifydemo.domain.model.Subject
-import com.lhfp.studifydemo.ui.home.HomeViewModel
+import com.lhfp.studifydemo.ui.subjects.SubjectsViewModel
 import com.lhfp.studifydemo.ui.theme.StudifyDemoTheme
 import com.lhfp.studifydemo.ui.theme.playFairFont
 
@@ -61,7 +61,7 @@ fun AddSubjectBottomSheet(
     sheetState: SheetState,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: SubjectsViewModel = hiltViewModel()
 ) {
     if (isSheetVisible) {
         ModalBottomSheet(
