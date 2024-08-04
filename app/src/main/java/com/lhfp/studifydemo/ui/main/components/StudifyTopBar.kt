@@ -1,11 +1,8 @@
 package com.lhfp.studifydemo.ui.main.components
 
 import android.content.res.Configuration
-import androidx.compose.material3.BottomAppBarScrollBehavior
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.lhfp.studifydemo.ui.theme.StudifyDemoTheme

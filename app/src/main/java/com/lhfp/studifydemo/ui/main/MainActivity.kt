@@ -4,8 +4,6 @@ import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -21,7 +19,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.lhfp.studifydemo.MockDataSources
+import com.lhfp.studifydemo.ui.common.MainNavigationScreens
 import com.lhfp.studifydemo.ui.common.NavHome
 import com.lhfp.studifydemo.ui.common.NavQuiz
 import com.lhfp.studifydemo.ui.common.NavStats
@@ -31,6 +31,7 @@ import com.lhfp.studifydemo.ui.main.components.Logo
 import com.lhfp.studifydemo.ui.main.components.SettingsButton
 import com.lhfp.studifydemo.ui.main.components.StudifyBottomNavigationBar
 import com.lhfp.studifydemo.ui.main.components.StudifyTopBar
+import com.lhfp.studifydemo.ui.notes.NotesScreen
 import com.lhfp.studifydemo.ui.subjects.SubjectsContent
 import com.lhfp.studifydemo.ui.subjects.SubjectsScreen
 import com.lhfp.studifydemo.ui.subjects.SubjectsState
@@ -44,15 +45,38 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setEdgeToEdgeWithInsets()
         setContent {
-            MainScreen(
-                subjectsScreen = { SubjectsScreen() }
-            )
+            val navController = rememberNavController()
+            NavHost(
+                navController = navController,
+                startDestination = MainNavigationScreens.NavMainScreen
+            ) {
+                composable<MainNavigationScreens.NavMainScreen> {
+                    MainScreen(
+                        homeScreen = { Text(text = "Home screen") },
+                        subjectsScreen = {
+                            SubjectsScreen(onSubjectClick = {
+                                navController.navigate(MainNavigationScreens.NavNoteListScreen(it))
+                            })
+                        },
+                        quizScreen = { Text(text = "Quiz screen") },
+                        statsScreen = { Text(text = "Stats screen") }
+                    )
+                }
+
+                composable<MainNavigationScreens.NavNoteListScreen> { backStackEntry ->
+                    val args = backStackEntry.toRoute<MainNavigationScreens.NavNoteListScreen>()
+                    NotesScreen(args.subjectId)
+                }
+            }
         }
     }
 
     @Composable
     fun MainScreen(
+        homeScreen: @Composable () -> Unit,
         subjectsScreen: @Composable () -> Unit,
+        quizScreen: @Composable () -> Unit,
+        statsScreen: @Composable () -> Unit
     ) {
         val isInitInDarkTheme = isSystemInDarkTheme()
 
@@ -83,10 +107,10 @@ class MainActivity : ComponentActivity() {
                             fadeOut(animationSpec = tween(300))
                         }
                     ) {
-                        composable<NavHome> { Text(text = "Home screen") }
+                        composable<NavHome> { homeScreen() }
                         composable<NavSubjects> { subjectsScreen() }
-                        composable<NavQuiz> { Text(text = "Quiz screen") }
-                        composable<NavStats> { Text(text = "Stats screen") }
+                        composable<NavQuiz> { quizScreen() }
+                        composable<NavStats> { statsScreen() }
                     }
                 }
             }
@@ -98,14 +122,16 @@ class MainActivity : ComponentActivity() {
     @Composable
     private fun MainPreview() {
         MainScreen(
+            homeScreen = {},
             subjectsScreen = {
                 SubjectsContent(
                     subjectsState = SubjectsState(
                         subjectsWithNotes = MockDataSources.SUBJECT_WITH_NOTES_LIST.toMutableList(),
-                    ),
-                    onEvent = {}
+                    ), onEvent = {}, onAddSubjectClick = {}, bottomSheet = {}, onSubjectClick = {}
                 )
-            }
+            },
+            quizScreen = {},
+            statsScreen = {}
         )
     }
 }

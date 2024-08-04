@@ -14,7 +14,6 @@ import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -35,62 +34,73 @@ import com.lhfp.studifydemo.ui.subjects.components.SubjectView
 import com.lhfp.studifydemo.ui.theme.StudifyDemoTheme
 import kotlinx.coroutines.launch
 
-@Composable
-fun SubjectsScreen(
-    viewModel: SubjectsViewModel = hiltViewModel()
-) {
-    SubjectsContent(
-        subjectsState = viewModel.state.value,
-        onEvent = { viewModel.onEvent(it) }
-    )
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SubjectsContent(
-    subjectsState: SubjectsState,
-    onEvent: (SubjectEvent) -> Unit,
-    modifier: Modifier = Modifier
+fun SubjectsScreen(
+    viewModel: SubjectsViewModel = hiltViewModel(),
+    onSubjectClick: (subjectId: Int) -> Unit
 ) {
+    val scope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true,
         confirmValueChange = { it != SheetValue.PartiallyExpanded }
     )
-    val scope = rememberCoroutineScope()
     var showBottomSheet by rememberSaveable { mutableStateOf(false) }
 
+    SubjectsContent(
+        subjectsState = viewModel.state.value,
+        onEvent = { viewModel.onEvent(it) },
+        onSubjectClick = {
+            onSubjectClick(it)
+        },
+        bottomSheet = {
+            AddSubjectBottomSheet(
+                isSheetVisible = showBottomSheet,
+                sheetState = sheetState,
+                onDismiss = {
+                    scope.launch { sheetState.hide() }
+                        .invokeOnCompletion { showBottomSheet = false }
+                }
+            )
+        },
+        onAddSubjectClick = { showBottomSheet = true }
+    )
+}
+
+@Composable
+fun SubjectsContent(
+    subjectsState: SubjectsState,
+    onEvent: (SubjectEvent) -> Unit,
+    onSubjectClick: (subjectId: Int) -> Unit,
+    bottomSheet: @Composable () -> Unit,
+    onAddSubjectClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     LazyColumn(
         modifier = modifier.fillMaxSize()
     ) {
-        addSubjectView { showBottomSheet = true }
+        addSubjectView(onAddSubject = onAddSubjectClick)
         items(subjectsState.subjectsWithNotes) { subject ->
             SubjectView(
                 subject,
-                onClick = {
-
-                },
+                onClick = { onSubjectClick(subject.subject.subjectId) },
                 onDelete = {
                     onEvent(SubjectEvent.DeleteSubject(subject.subject))
                 })
         }
     }
 
-    AddSubjectBottomSheet(
-        isSheetVisible = showBottomSheet,
-        sheetState = sheetState,
-        onDismiss = {
-            scope.launch { sheetState.hide() }
-                .invokeOnCompletion { showBottomSheet = false }
-        })
+    bottomSheet()
 }
-
 
 fun LazyListScope.addSubjectView(onAddSubject: () -> Unit) {
     item {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Absolute.SpaceBetween,
-            modifier = Modifier.fillMaxWidth().padding(start = 10.dp, end = 10.dp, top = 15.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 10.dp, end = 10.dp, top = 15.dp)
         ) {
             ElevatedButton(onClick = {
                 onAddSubject()
@@ -116,7 +126,10 @@ private fun SubjectsPreview() {
             subjectsState = SubjectsState(
                 subjectsWithNotes = MockDataSources.SUBJECT_WITH_NOTES_LIST.toMutableList(),
             ),
-            onEvent = {}
+            onEvent = {},
+            onAddSubjectClick = {},
+            bottomSheet = {},
+            onSubjectClick = {}
         )
     }
 }
