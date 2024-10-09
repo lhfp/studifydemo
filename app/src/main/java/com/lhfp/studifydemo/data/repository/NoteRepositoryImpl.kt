@@ -13,7 +13,7 @@ class NoteRepositoryImpl(
         dao.insertNote(note)
     }
 
-    override suspend fun getNotesForSubject(subjectId: Int): Flow<List<Note>> {
+    override fun getNotesForSubject(subjectId: Int): Flow<List<Note>> {
         return dao.getNotesForSubject(subjectId)
     }
 

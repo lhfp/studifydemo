@@ -3,6 +3,8 @@ package com.lhfp.studifydemo.ui.main
 import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -27,11 +29,12 @@ import com.lhfp.studifydemo.ui.common.NavQuiz
 import com.lhfp.studifydemo.ui.common.NavStats
 import com.lhfp.studifydemo.ui.common.NavSubjects
 import com.lhfp.studifydemo.ui.common.setEdgeToEdgeWithInsets
+import com.lhfp.studifydemo.ui.edit_note.EditNoteScreen
 import com.lhfp.studifydemo.ui.main.components.Logo
 import com.lhfp.studifydemo.ui.main.components.SettingsButton
 import com.lhfp.studifydemo.ui.main.components.StudifyBottomNavigationBar
 import com.lhfp.studifydemo.ui.main.components.StudifyTopBar
-import com.lhfp.studifydemo.ui.notes.NotesScreen
+import com.lhfp.studifydemo.ui.notes_list.NotesScreen
 import com.lhfp.studifydemo.ui.subjects.SubjectsContent
 import com.lhfp.studifydemo.ui.subjects.SubjectsScreen
 import com.lhfp.studifydemo.ui.subjects.SubjectsState
@@ -44,6 +47,13 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setEdgeToEdgeWithInsets()
+
+        onBackPressedDispatcher.addCallback(this, object: OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                finish()
+            }
+        })
+
         setContent {
             val navController = rememberNavController()
             NavHost(
@@ -55,7 +65,7 @@ class MainActivity : ComponentActivity() {
                         homeScreen = { Text(text = "Home screen") },
                         subjectsScreen = {
                             SubjectsScreen(onSubjectClick = {
-                                navController.navigate(MainNavigationScreens.NavNoteListScreen(it))
+                                navController.navigate(MainNavigationScreens.NavNotesScreen(it))
                             })
                         },
                         quizScreen = { Text(text = "Quiz screen") },
@@ -63,8 +73,8 @@ class MainActivity : ComponentActivity() {
                     )
                 }
 
-                composable<MainNavigationScreens.NavNoteListScreen> { backStackEntry ->
-                    val args = backStackEntry.toRoute<MainNavigationScreens.NavNoteListScreen>()
+                composable<MainNavigationScreens.NavNotesScreen> { backStackEntry ->
+                    val args = backStackEntry.toRoute<MainNavigationScreens.NavNotesScreen>()
                     NotesScreen(args.subjectId)
                 }
             }
@@ -97,6 +107,7 @@ class MainActivity : ComponentActivity() {
                         .fillMaxSize()
                         .padding(it)
                 ) {
+
                     NavHost(
                         navController = navController,
                         startDestination = NavHome,
@@ -107,10 +118,30 @@ class MainActivity : ComponentActivity() {
                             fadeOut(animationSpec = tween(300))
                         }
                     ) {
-                        composable<NavHome> { homeScreen() }
-                        composable<NavSubjects> { subjectsScreen() }
-                        composable<NavQuiz> { quizScreen() }
-                        composable<NavStats> { statsScreen() }
+                        composable<NavHome> {
+                            BackHandler {
+                                this@MainActivity.finish()
+                            }
+                            homeScreen()
+                        }
+                        composable<NavSubjects> {
+                            BackHandler {
+                                this@MainActivity.finish()
+                            }
+                            subjectsScreen()
+                        }
+                        composable<NavQuiz> {
+                            BackHandler {
+                                this@MainActivity.finish()
+                            }
+                            quizScreen()
+                        }
+                        composable<NavStats> {
+                            BackHandler {
+                                this@MainActivity.finish()
+                            }
+                            statsScreen()
+                        }
                     }
                 }
             }

@@ -86,93 +86,89 @@ fun AddSubjectView(
     modifier: Modifier = Modifier,
     onClick: (subject: Subject) -> Unit
 ) {
-    StudifyDemoTheme()
-    {
-        var subjectNameText by rememberSaveable { mutableStateOf("") }
-        val subjectNameTextMaxLength by rememberSaveable { mutableIntStateOf(20) }
-        var selectedColor by rememberSaveable { mutableIntStateOf(0) }
+    val subjectNameTextMaxLength = 20
+    var subjectNameText by rememberSaveable { mutableStateOf("") }
+    var selectedColor by rememberSaveable { mutableIntStateOf(0) }
 
-        Box(
-            modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.onSecondary)
-                .padding(top = 15.dp, start = 15.dp)
+    Box(
+        modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.onSecondary)
+            .padding(top = 15.dp, start = 15.dp)
+    ) {
+        Column(
+            modifier = modifier
+                .align(Alignment.TopCenter)
         ) {
-            Column(
-                modifier = modifier
-                    .align(Alignment.TopCenter)
-            ) {
-                Text(
-                    text = stringResource(id = R.string.new_subject_title),
-                    fontFamily = playFairFont,
-                    fontSize = 25.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
+            Text(
+                text = stringResource(id = R.string.new_subject_title),
+                fontFamily = playFairFont,
+                fontSize = 25.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onBackground
+            )
 
-                Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
-                OutlinedTextField(
-                    value = subjectNameText,
-                    onValueChange = {
-                        if (it.length <= subjectNameTextMaxLength) {
-                            subjectNameText = it
-                        }
-                    },
-                    label = { Text(text = stringResource(id = R.string.add_subject_name_field)) },
-                    singleLine = true,
-                    textStyle = TextStyle(color = MaterialTheme.colorScheme.onBackground),
-                    trailingIcon = {
-                        Icon(
-                            imageVector = Icons.Outlined.Book,
-                            contentDescription = ""
-                        )
-                    },
-                    supportingText = {
-                        Text(
-                            text = "${subjectNameText.length} / $subjectNameTextMaxLength",
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.End,
-                        )
-                    },
-                    shape = RoundedCornerShape(12.dp),
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                )
-
-                Spacer(modifier = Modifier.height(20.dp))
-
-                ColorSelector(
-                    currentSelectedColor = selectedColor,
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
-                    onColorChange = { selectedColor = it }
-                )
-
-                Spacer(modifier = Modifier.height(50.dp))
-
-                Button(
-                    onClick = {
-                        onClick(
-                            Subject(
-                                name = subjectNameText,
-                                color = selectedColor,
-                                updatedAt = System.currentTimeMillis()
-                            )
-                        )
-                    },
-                    modifier = Modifier
-                        .align(Alignment.End)
-                        .padding(end = 25.dp),
-                    content = {
-                        Text(
-                            text = stringResource(id = R.string.add)
-                        )
-                        Icon(
-                            Icons.Filled.Add,
-                            contentDescription = ""
-                        )
+            OutlinedTextField(
+                value = subjectNameText,
+                onValueChange = {
+                    if (it.length <= subjectNameTextMaxLength) {
+                        subjectNameText = it
                     }
-                )
-            }
+                },
+                label = { Text(text = stringResource(id = R.string.add_subject_name_field)) },
+                singleLine = true,
+                trailingIcon = {
+                    Icon(
+                        imageVector = Icons.Outlined.Book,
+                        contentDescription = ""
+                    )
+                },
+                supportingText = {
+                    Text(
+                        text = "${subjectNameText.length} / $subjectNameTextMaxLength",
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.End,
+                    )
+                },
+                shape = RoundedCornerShape(12.dp),
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            ColorSelector(
+                currentSelectedColor = selectedColor,
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                onColorChange = { selectedColor = it }
+            )
+
+            Spacer(modifier = Modifier.height(50.dp))
+
+            Button(
+                onClick = {
+                    onClick(
+                        Subject(
+                            name = subjectNameText,
+                            color = selectedColor,
+                            updatedAt = System.currentTimeMillis()
+                        )
+                    )
+                },
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .padding(end = 25.dp),
+                content = {
+                    Text(
+                        text = stringResource(id = R.string.add)
+                    )
+                    Icon(
+                        Icons.Filled.Add,
+                        contentDescription = ""
+                    )
+                }
+            )
         }
     }
 }
@@ -244,5 +240,5 @@ fun ColorSelector(
 @Preview(name = "LightMode", showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 private fun AddSubjectViewPreview() {
-    AddSubjectView() {}
+    AddSubjectView {}
 }

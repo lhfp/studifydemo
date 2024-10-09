@@ -17,4 +17,7 @@
     <string name="add_subject_name_field">Name</string>
     <string name="add_subject_color_field">Select a color:</string>
     <string name="title_activity_note_list">NoteListActivity</string>
+
+    <!-- Note -->
+    <string name="empty_note_title">Empty Title</string>"
 </resources>

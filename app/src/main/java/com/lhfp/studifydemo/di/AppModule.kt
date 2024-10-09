@@ -7,6 +7,11 @@ import com.lhfp.studifydemo.data.repository.NoteRepositoryImpl
 import com.lhfp.studifydemo.data.repository.SubjectRepositoryImpl
 import com.lhfp.studifydemo.domain.repository.NoteRepository
 import com.lhfp.studifydemo.domain.repository.SubjectRepository
+import com.lhfp.studifydemo.domain.usecases.notes.AddNote
+import com.lhfp.studifydemo.domain.usecases.notes.DeleteNote
+import com.lhfp.studifydemo.domain.usecases.notes.GetNotes
+import com.lhfp.studifydemo.domain.usecases.notes.NotesUseCases
+import com.lhfp.studifydemo.domain.usecases.notes.UpdateNote
 import com.lhfp.studifydemo.domain.usecases.subjects.AddSubject
 import com.lhfp.studifydemo.domain.usecases.subjects.GetSubjects
 import com.lhfp.studifydemo.domain.usecases.subjects.GetSubjectsWithNotes
@@ -52,6 +57,17 @@ object AppModule {
             addSubject = AddSubject(repository),
             removeSubject = RemoveSubject(repository),
             getSubjectsWithNotes = GetSubjectsWithNotes(repository)
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideNotesUseCase(repository: NoteRepository): NotesUseCases {
+        return NotesUseCases(
+            getNotes = GetNotes(repository),
+            addNote = AddNote(repository),
+            deleteNote = DeleteNote(repository),
+            updateNote = UpdateNote(repository)
         )
     }
 }

@@ -77,16 +77,23 @@ fun SubjectsContent(
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier
+            .fillMaxSize()
     ) {
         addSubjectView(onAddSubject = onAddSubjectClick)
-        items(subjectsState.subjectsWithNotes) { subject ->
-            SubjectView(
-                subject,
-                onClick = { onSubjectClick(subject.subject.subjectId) },
-                onDelete = {
-                    onEvent(SubjectEvent.DeleteSubject(subject.subject))
-                })
+        items(
+            items = subjectsState.subjectsWithNotes,
+            key = { it.subject.subjectId }
+        ) { subject ->
+            Row(Modifier.animateItem()) {
+                SubjectView(
+                    subject,
+                    onClick = { onSubjectClick(subject.subject.subjectId) },
+                    onDelete = {
+                        onEvent(SubjectEvent.DeleteSubject(subject.subject))
+                    }
+                )
+            }
         }
     }
 

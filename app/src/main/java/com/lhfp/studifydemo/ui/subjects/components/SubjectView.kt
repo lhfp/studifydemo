@@ -31,7 +31,8 @@ import com.lhfp.studifydemo.ui.common.SwippeableBox
 fun SubjectView(
     subjectWithNotes: SubjectWithNotes,
     onClick: () -> Unit,
-    onDelete: () -> Unit
+    onDelete: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     SwippeableBox(
         content = {
@@ -45,7 +46,8 @@ fun SubjectView(
                 onDelete()
                 it()
             })
-        }
+        },
+        modifier = modifier
     )
 }
 

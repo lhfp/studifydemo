@@ -5,6 +5,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.lhfp.studifydemo.R
 
@@ -32,12 +33,36 @@ val Typography = Typography(
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
         lineHeight = 24.sp,
-        letterSpacing = 0.5.sp
+        letterSpacing = 0.5.sp,
+        textAlign = TextAlign.Justify
     ),
     titleLarge = TextStyle(
         fontFamily = playFairFont,
         fontWeight = FontWeight.Bold,
         fontSize = 22.sp
+    ),
+    titleMedium = TextStyle(
+        fontFamily = playFairFont,
+        fontWeight = FontWeight.Bold,
+        fontSize = 18.sp
+    ),
+    headlineMedium = TextStyle(
+        fontFamily = robotoFont,
+        fontWeight = FontWeight.Bold,
+        fontSize = 20.sp
+    ),
+    headlineLarge = TextStyle(
+        fontFamily = robotoFont,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 30.sp
+    ),
+    bodyMedium = TextStyle(
+        fontFamily = robotoFont,
+        fontWeight = FontWeight.Normal,
+        fontSize = 13.sp,
+        lineHeight = 18.sp,
+        letterSpacing = 0.5.sp,
+        textAlign = TextAlign.Justify
     )
     /* Other default text styles to override
     titleLarge = TextStyle(
