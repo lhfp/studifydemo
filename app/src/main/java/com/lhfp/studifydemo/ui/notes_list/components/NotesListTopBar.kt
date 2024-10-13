@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 fun NotesListTopBar(
     subjectName: String,
     subjectColor: Color,
+    navigateBack: () -> Unit,
     action: @Composable () -> Unit = {}
 ) {
     TopAppBar(
@@ -31,7 +32,7 @@ fun NotesListTopBar(
         },
         navigationIcon = {
             IconButton(
-                onClick = { /*TODO*/ },
+                onClick = navigateBack,
                 modifier = Modifier.padding(start = 10.dp)
             ) {
                 Icon(

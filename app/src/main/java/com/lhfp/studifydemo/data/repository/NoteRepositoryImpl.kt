@@ -9,8 +9,8 @@ class NoteRepositoryImpl(
     private val dao: NoteDao
 ): NoteRepository {
 
-    override suspend fun insertNote(note: Note) {
-        dao.insertNote(note)
+    override suspend fun insertNote(note: Note): Long {
+        return dao.insertNote(note)
     }
 
     override fun getNotesForSubject(subjectId: Int): Flow<List<Note>> {

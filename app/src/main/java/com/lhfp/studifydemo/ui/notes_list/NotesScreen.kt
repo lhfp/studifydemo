@@ -1,6 +1,7 @@
 package com.lhfp.studifydemo.ui.notes_list
 
 import android.content.res.Configuration
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -20,6 +21,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -46,6 +49,7 @@ import com.lhfp.studifydemo.ui.theme.StudifyDemoTheme
 fun NotesScreen(
     subjectId: Int,
     modifier: Modifier = Modifier,
+    navigateBack: () -> Unit,
     subjectsViewModel: SubjectsViewModel = hiltViewModel(),
     notesViewModel: NotesViewModel = hiltViewModel()
 ) {
@@ -56,6 +60,7 @@ fun NotesScreen(
 
         val navController = rememberNavController()
         val emptyTitle = stringResource(id = R.string.empty_note_title)
+        val newNoteId by notesViewModel.newNoteId
 
         StudifyDemoTheme {
             NavHost(
@@ -71,11 +76,6 @@ fun NotesScreen(
                                 title = emptyTitle,
                                 subjectId = subjectId
                             )
-                            navController.navigate(
-                                NoteNavigationScreens.NavNoteEditScreen(
-                                    noteId = subjectWithNotes.notes.last().noteId
-                                )
-                            )
                         },
                         onNoteTap = {
                             navController.navigate(
@@ -83,7 +83,8 @@ fun NotesScreen(
                                     noteId = it
                                 )
                             )
-                        }
+                        },
+                        navigateBack = navigateBack
                     )
                 }
 
@@ -91,9 +92,20 @@ fun NotesScreen(
                     val args = backStackEntry.toRoute<NoteNavigationScreens.NavNoteEditScreen>()
                     EditNoteScreen(
                         subjectId = subjectId,
-                        noteId = args.noteId
+                        noteId = args.noteId,
+                        navigateBack = { navController.navigateUp() }
                     )
                 }
+            }
+        }
+
+        LaunchedEffect(newNoteId) {
+            newNoteId?.let {
+                navController.navigate(
+                    NoteNavigationScreens.NavNoteEditScreen(
+                        noteId = it.toInt()
+                    )
+                )
             }
         }
     }
@@ -104,7 +116,8 @@ fun NotesContent(
     subject: SubjectWithNotes,
     modifier: Modifier = Modifier,
     onNoteCreate: () -> Unit,
-    onNoteTap: (Int) -> Unit
+    onNoteTap: (Int) -> Unit,
+    navigateBack: () -> Unit = {}
 ) {
     Scaffold(
         topBar = {
@@ -123,7 +136,8 @@ fun NotesContent(
                             )
                         }
                     }
-                }
+                },
+                navigateBack = navigateBack
             )
         }
     ) {
@@ -216,7 +230,7 @@ private fun GeographyNotesPreview() {
                 notes = MockDataSources.NOTES_LIST
             ),
             onNoteCreate = {},
-            onNoteTap = {}
+            onNoteTap = {},
         )
     }
 }
@@ -231,7 +245,7 @@ private fun PhysicsNotesPreview() {
                 notes = emptyList()
             ),
             onNoteCreate = {},
-            onNoteTap = {}
+            onNoteTap = {},
         )
     }
 }

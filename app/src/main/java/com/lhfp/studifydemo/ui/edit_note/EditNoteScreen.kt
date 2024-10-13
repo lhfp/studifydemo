@@ -4,10 +4,10 @@ import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -33,6 +33,7 @@ import com.lhfp.studifydemo.ui.theme.StudifyDemoTheme
 fun EditNoteScreen(
     subjectId: Int,
     noteId: Int,
+    navigateBack: () -> Unit,
     subjectsViewModel: SubjectsViewModel = hiltViewModel(),
     notesViewModel: NotesViewModel = hiltViewModel()
 ) {
@@ -45,13 +46,13 @@ fun EditNoteScreen(
             subject = currentSubject.subject,
             note = note,
             onNoteTitleChange = {
-                // TODO: update note title
                 notesViewModel.updateNoteTitle(note, it)
             },
             onNoteContentChange = {
-                // TODO: update note content
                 notesViewModel.updateNoteContent(note, it)
-            }
+            },
+            navigateBack = navigateBack,
+            modifier = Modifier.imePadding()
         )
     }
 }
@@ -61,6 +62,7 @@ fun EditNoteContent(
     subject: Subject,
     note: Note,
     modifier: Modifier = Modifier,
+    navigateBack: () -> Unit = {},
     onNoteContentChange: (String) -> Unit = {},
     onNoteTitleChange: (String) -> Unit = {}
 ) {
@@ -69,6 +71,7 @@ fun EditNoteContent(
             NotesListTopBar(
                 subjectName = subject.name,
                 subjectColor = colorResource(subject.color),
+                navigateBack = navigateBack
             )
         }
     ) {

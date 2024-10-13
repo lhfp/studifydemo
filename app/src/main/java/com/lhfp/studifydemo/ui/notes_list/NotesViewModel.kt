@@ -18,9 +18,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NotesViewModel @Inject constructor(private val notesUseCases: NotesUseCases) : ViewModel() {
-    
+
     private val _state = mutableStateOf(NoteListState())
     val state: State<NoteListState> = _state
+
+    private val _newNoteId = mutableStateOf<Long?>(null)
+    val newNoteId: State<Long?> = _newNoteId
 
     private var getNotesJob: Job? = null
 
@@ -29,7 +32,13 @@ class NotesViewModel @Inject constructor(private val notesUseCases: NotesUseCase
         noteOrder: NoteOrder = NoteOrder.CreatedDate(OrderType.Descending)
     ) {
         getNotesJob?.cancel()
-        getNotesJob = notesUseCases.getNotes(subjectId, noteOrder).onEach {  notes ->
+        notesUseCases.getNotes(subjectId, noteOrder).onEach { notes ->
+            _state.value = _state.value.copy(
+                notes = notes.toMutableList(),
+                noteOrder = noteOrder
+            )
+        }.launchIn(viewModelScope)
+        getNotesJob = notesUseCases.getNotes(subjectId, noteOrder).onEach { notes ->
             _state.value = _state.value.copy(
                 notes = notes.toMutableList(),
                 noteOrder = noteOrder
@@ -38,11 +47,12 @@ class NotesViewModel @Inject constructor(private val notesUseCases: NotesUseCase
     }
 
     fun onEvent(event: NoteListEvent) {
-        when(event) {
+        when (event) {
             is NoteListEvent.DeleteNote -> TODO()
             is NoteListEvent.Order -> {
                 if (state.value.noteOrder::class == event.noteOrder::class
-                    && state.value.noteOrder.orderType == event.noteOrder.orderType) {
+                    && state.value.noteOrder.orderType == event.noteOrder.orderType
+                ) {
                     return
                 }
                 getNotes(event.subject.subjectId, event.noteOrder)
@@ -53,7 +63,7 @@ class NotesViewModel @Inject constructor(private val notesUseCases: NotesUseCase
     private fun addNote(note: Note) {
         viewModelScope.launch {
             runCatching {
-                notesUseCases.addNote(note)
+                notesUseCases.addNote(note).also { _newNoteId.value = it }
             }.onFailure {
                 Log.d(TAG, "addNote: ${it.message}")
             }
@@ -69,8 +79,9 @@ class NotesViewModel @Inject constructor(private val notesUseCases: NotesUseCase
                 updatedAt = System.currentTimeMillis(),
                 subjectId = subjectId
             )
-        )
-        getNotes(subjectId)
+        ).also {
+            getNotes(subjectId)
+        }
     }
 
     fun updateNoteTitle(note: Note, title: String) {

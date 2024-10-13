@@ -29,7 +29,6 @@ import com.lhfp.studifydemo.ui.common.NavQuiz
 import com.lhfp.studifydemo.ui.common.NavStats
 import com.lhfp.studifydemo.ui.common.NavSubjects
 import com.lhfp.studifydemo.ui.common.setEdgeToEdgeWithInsets
-import com.lhfp.studifydemo.ui.edit_note.EditNoteScreen
 import com.lhfp.studifydemo.ui.main.components.Logo
 import com.lhfp.studifydemo.ui.main.components.SettingsButton
 import com.lhfp.studifydemo.ui.main.components.StudifyBottomNavigationBar
@@ -75,7 +74,10 @@ class MainActivity : ComponentActivity() {
 
                 composable<MainNavigationScreens.NavNotesScreen> { backStackEntry ->
                     val args = backStackEntry.toRoute<MainNavigationScreens.NavNotesScreen>()
-                    NotesScreen(args.subjectId)
+                    NotesScreen(
+                        subjectId = args.subjectId,
+                        navigateBack = { navController.navigateUp() }
+                    )
                 }
             }
         }

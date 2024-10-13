@@ -40,7 +40,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -50,7 +49,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.lhfp.studifydemo.R
 import com.lhfp.studifydemo.domain.model.Subject
 import com.lhfp.studifydemo.ui.subjects.SubjectsViewModel
-import com.lhfp.studifydemo.ui.theme.StudifyDemoTheme
 import com.lhfp.studifydemo.ui.theme.playFairFont
 
 

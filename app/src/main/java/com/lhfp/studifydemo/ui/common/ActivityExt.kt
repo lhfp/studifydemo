@@ -1,6 +1,7 @@
 package com.lhfp.studifydemo.ui.common
 
 import android.graphics.Color
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
