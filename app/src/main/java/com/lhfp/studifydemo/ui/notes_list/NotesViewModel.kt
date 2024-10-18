@@ -32,12 +32,6 @@ class NotesViewModel @Inject constructor(private val notesUseCases: NotesUseCase
         noteOrder: NoteOrder = NoteOrder.CreatedDate(OrderType.Descending)
     ) {
         getNotesJob?.cancel()
-        notesUseCases.getNotes(subjectId, noteOrder).onEach { notes ->
-            _state.value = _state.value.copy(
-                notes = notes.toMutableList(),
-                noteOrder = noteOrder
-            )
-        }.launchIn(viewModelScope)
         getNotesJob = notesUseCases.getNotes(subjectId, noteOrder).onEach { notes ->
             _state.value = _state.value.copy(
                 notes = notes.toMutableList(),

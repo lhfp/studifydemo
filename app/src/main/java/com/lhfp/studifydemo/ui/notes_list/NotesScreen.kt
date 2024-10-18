@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -42,6 +43,7 @@ import com.lhfp.studifydemo.domain.model.SubjectWithNotes
 import com.lhfp.studifydemo.ui.common.NoteNavigationScreens
 import com.lhfp.studifydemo.ui.edit_note.EditNoteScreen
 import com.lhfp.studifydemo.ui.notes_list.components.NotesListTopBar
+import com.lhfp.studifydemo.ui.quiz.QuizViewModel
 import com.lhfp.studifydemo.ui.subjects.SubjectsViewModel
 import com.lhfp.studifydemo.ui.theme.StudifyDemoTheme
 
@@ -126,9 +128,7 @@ fun NotesContent(
                 subjectColor = colorResource(subject.subject.color),
                 action = {
                     AnimatedVisibility(visible = true) {
-                        IconButton(
-                            onClick = onNoteCreate
-                        ) {
+                        IconButton(onClick = onNoteCreate) {
                             Icon(
                                 imageVector = Icons.Filled.Add,
                                 contentDescription = "",
@@ -204,7 +204,6 @@ fun EmptyNotesScreen(subjectColor: Color, createNote: () -> Unit) {
             ExtendedFloatingActionButton(
                 onClick = {
                     createNote()
-                    // TODO: then go to edit note view with that note
                 },
                 containerColor = subjectColor,
                 modifier = Modifier.padding(10.dp)

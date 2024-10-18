@@ -42,7 +42,6 @@ fun SubjectsScreen(
 ) {
     val scope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true,
         confirmValueChange = { it != SheetValue.PartiallyExpanded }
     )
     var showBottomSheet by rememberSaveable { mutableStateOf(false) }
