@@ -34,6 +34,8 @@ import com.lhfp.studifydemo.ui.main.components.SettingsButton
 import com.lhfp.studifydemo.ui.main.components.StudifyBottomNavigationBar
 import com.lhfp.studifydemo.ui.main.components.StudifyTopBar
 import com.lhfp.studifydemo.ui.notes_list.NotesScreen
+import com.lhfp.studifydemo.ui.quiz.QuizScreen
+import com.lhfp.studifydemo.ui.quiz.quiz_list.QuizListScreen
 import com.lhfp.studifydemo.ui.subjects.SubjectsContent
 import com.lhfp.studifydemo.ui.subjects.SubjectsScreen
 import com.lhfp.studifydemo.ui.subjects.SubjectsState
@@ -67,7 +69,13 @@ class MainActivity : ComponentActivity() {
                                 navController.navigate(MainNavigationScreens.NavNotesScreen(it))
                             })
                         },
-                        quizScreen = { Text(text = "Quiz screen") },
+                        quizScreen = {
+                            QuizListScreen(
+                                onQuizOpen = {
+                                    navController.navigate(MainNavigationScreens.NavQuizScreen(it))
+                                }
+                            )
+                        },
                         statsScreen = { Text(text = "Stats screen") }
                     )
                 }
@@ -76,6 +84,14 @@ class MainActivity : ComponentActivity() {
                     val args = backStackEntry.toRoute<MainNavigationScreens.NavNotesScreen>()
                     NotesScreen(
                         subjectId = args.subjectId,
+                        navigateBack = { navController.navigateUp() }
+                    )
+                }
+
+                composable<MainNavigationScreens.NavQuizScreen> { backStackEntry ->
+                    val args = backStackEntry.toRoute<MainNavigationScreens.NavQuizScreen>()
+                    QuizScreen(
+                        quizId = args.quizId,
                         navigateBack = { navController.navigateUp() }
                     )
                 }

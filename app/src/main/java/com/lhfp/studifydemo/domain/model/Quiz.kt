@@ -25,7 +25,7 @@ data class Quiz(
     val completedAt: Long? = null,
     val startedAt: Long? = null,
     val dateLimit: Long? = null,
-    val isCompleted: Boolean
+    val isCompleted: Boolean = false
 )
 
 

@@ -17,6 +17,7 @@ import com.lhfp.studifydemo.domain.usecases.notes.UpdateNote
 import com.lhfp.studifydemo.domain.usecases.quiz.CreateQuiz
 import com.lhfp.studifydemo.domain.usecases.quiz.DeleteQuiz
 import com.lhfp.studifydemo.domain.usecases.quiz.GetAllQuizzes
+import com.lhfp.studifydemo.domain.usecases.quiz.GetAllQuizzesWithQuestions
 import com.lhfp.studifydemo.domain.usecases.quiz.GetCompletedQuizzes
 import com.lhfp.studifydemo.domain.usecases.quiz.GetQuizById
 import com.lhfp.studifydemo.domain.usecases.quiz.GetQuizWithQuestions
@@ -103,7 +104,8 @@ object AppModule {
             getCompletedQuizzes = GetCompletedQuizzes(quizRepository),
             deleteQuiz = DeleteQuiz(quizRepository),
             updateQuiz = UpdateQuiz(quizRepository),
-            getQuizWithQuestions = GetQuizWithQuestions(quizRepository)
+            getQuizWithQuestions = GetQuizWithQuestions(quizRepository),
+            getAllQuizzesWithQuestions = GetAllQuizzesWithQuestions(quizRepository)
         )
     }
 }

@@ -8,6 +8,9 @@ sealed class MainNavigationScreens {
 
     @Serializable
     data class NavNotesScreen(val subjectId: Int)
+
+    @Serializable
+    data class NavQuizScreen(val quizId: Int)
 }
 
 sealed class NoteNavigationScreens {

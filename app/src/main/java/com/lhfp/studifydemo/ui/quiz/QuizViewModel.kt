@@ -9,6 +9,7 @@ import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.content
 import com.lhfp.studifydemo.domain.model.SubjectWithNotes
 import com.lhfp.studifydemo.domain.usecases.quiz.QuizUseCases
+import com.lhfp.studifydemo.ui.quiz.quiz_list.QuizListState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -20,8 +21,11 @@ import javax.inject.Inject
 @HiltViewModel
 class QuizViewModel @Inject constructor (private val quizUseCases: QuizUseCases) : ViewModel() {
 
-    private val _state = mutableStateOf(QuizState())
-    val state: State<QuizState> = _state
+    private val _quizState = mutableStateOf(QuizState())
+    val quizState: State<QuizState> = _quizState
+
+    private val _quizListState = mutableStateOf(QuizListState())
+    val quizListState: State<QuizListState> = _quizListState
 
     private val generativeModel = GenerativeModel(
         modelName = "gemini-1.5-pro-latest",
@@ -37,13 +41,13 @@ class QuizViewModel @Inject constructor (private val quizUseCases: QuizUseCases)
     private fun getQuizzes() {
         getQuizzesJob?.cancel()
         quizUseCases.getAllQuizzesWithQuestions().onEach {
-            _state.value = state.value.copy(quizzes = it)
+            _quizListState.value = quizListState.value.copy(quizzes = it)
         }.launchIn(viewModelScope)
     }
 
     fun generateQuiz(subjectContent: String, subjectId: Int) {
         Log.i("QUIZ GENERATOR::", "Generating quiz...")
-        _state.value = state.value.copy(uiState = UIState.Loading)
+        _quizListState.value = _quizListState.value.copy(uiState = UIState.Loading)
 
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -54,11 +58,12 @@ class QuizViewModel @Inject constructor (private val quizUseCases: QuizUseCases)
                 })
 
                 response.text?.let {
-                    Log.i("QUIZ GENERATOR::", it)
-                    insertGeneratedQuiz(it, subjectId)
+                    val responseString = it.replace("```json", "").replace("```", "")
+                    Log.i("QUIZ GENERATOR::", responseString)
+                    insertGeneratedQuiz(responseString, subjectId)
                 }
             } catch (e: Exception) {
-                _state.value = state.value.copy(uiState = UIState.Error("Something went wrong"))
+                _quizListState.value = quizListState.value.copy(uiState = UIState.Error("Something went wrong"))
                 Log.i("QUIZ GENERATOR::", e.message.toString())
             }
         }
@@ -66,7 +71,9 @@ class QuizViewModel @Inject constructor (private val quizUseCases: QuizUseCases)
 
     private fun insertGeneratedQuiz(generativeResponse: String, subjectId: Int) {
         viewModelScope.launch {
-            quizUseCases.createQuiz(generativeResponse, subjectId)
+            quizUseCases.createQuiz(generativeResponse, subjectId).let {
+                _quizListState.value = _quizListState.value.copy(uiState = UIState.OnQuizReady(it.toInt()))
+            }
         }
     }
 
@@ -83,6 +90,9 @@ class QuizViewModel @Inject constructor (private val quizUseCases: QuizUseCases)
         return subjectContent.toString()
     }
 
+    fun onUIEvent(uiState: UIState) {
+        _quizListState.value = _quizListState.value.copy(uiState = uiState)
+    }
 
     companion object {
         private const val PROMPT_PREFIX = "given the following text:"

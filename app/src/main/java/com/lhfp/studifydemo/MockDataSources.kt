@@ -2,6 +2,11 @@ package com.lhfp.studifydemo
 
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import com.lhfp.studifydemo.domain.model.Note
+import com.lhfp.studifydemo.domain.model.Option
+import com.lhfp.studifydemo.domain.model.Question
+import com.lhfp.studifydemo.domain.model.QuestionWithOptions
+import com.lhfp.studifydemo.domain.model.Quiz
+import com.lhfp.studifydemo.domain.model.QuizWithQuestions
 import com.lhfp.studifydemo.domain.model.Subject
 import com.lhfp.studifydemo.domain.model.SubjectWithNotes
 
@@ -90,6 +95,79 @@ class MockDataSources {
                 subject = PHYSICS_SUBJECT,
                 notes = NOTES_LIST
             ),
+        )
+
+        private val QUIZ_1 = Quiz(
+            quizId = 1,
+            name = "Quiz 1",
+            subjectId = 1,
+            isCompleted = false,
+            completedAt = null,
+            numQuestions = 10,
+            numCorrectAnswers = 0,
+            type = 1
+        )
+
+        private val QUIZ_2 = Quiz(
+            quizId = 2,
+            name = "Quiz 2",
+            subjectId = 4,
+            isCompleted = false,
+            completedAt = null,
+            numQuestions = 10,
+            numCorrectAnswers = 0,
+            type = 1
+        )
+
+        private val QUIZ_3 = Quiz(
+            quizId = 3,
+            name = "Quiz 3",
+            subjectId = 0,
+            isCompleted = false,
+            completedAt = null,
+            numQuestions = 10,
+            numCorrectAnswers = 0,
+            type = 1
+        )
+
+        private val QUIZ_1_QUESTIONS = listOf(
+            QuestionWithOptions(
+                question = Question(
+                    text = "Question 1",
+                    quizOwnerId = 1,
+                    questionType = 1
+                ),
+                options = listOf(
+                    Option(answer = "Option 1", isCorrect = true, questionOwnerId = 1),
+                    Option(answer = "Option 2", isCorrect = false, questionOwnerId = 1)
+                )
+            ),
+            QuestionWithOptions(
+                question = Question(
+                    text = "Question 2",
+                    quizOwnerId = 1,
+                    questionType = 1
+                ),
+                options = listOf(
+                    Option(answer = "Option 1", isCorrect = false, questionOwnerId = 1),
+                    Option(answer = "Option 2", isCorrect = true, questionOwnerId = 1)
+                )
+            ),
+        )
+
+        val QUIZ_WITH_QUESTIONS_LIST =  listOf(
+            QuizWithQuestions(
+                quiz = QUIZ_1,
+                questions = QUIZ_1_QUESTIONS
+            ),
+            QuizWithQuestions(
+                quiz = QUIZ_2,
+                questions = QUIZ_1_QUESTIONS
+            ),
+            QuizWithQuestions(
+                quiz = QUIZ_3.copy(isCompleted = true),
+                questions = QUIZ_1_QUESTIONS
+            )
         )
     }
 }
