@@ -63,6 +63,14 @@ val Typography = Typography(
         lineHeight = 18.sp,
         letterSpacing = 0.5.sp,
         textAlign = TextAlign.Justify
+    ),
+    labelMedium = TextStyle(
+        fontFamily = robotoFont,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 16.sp,
+        lineHeight = 18.sp,
+        letterSpacing = 0.5.sp,
+        textAlign = TextAlign.Justify,
     )
     /* Other default text styles to override
     titleLarge = TextStyle(

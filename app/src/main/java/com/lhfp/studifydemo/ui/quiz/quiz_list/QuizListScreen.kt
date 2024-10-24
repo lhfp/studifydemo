@@ -255,7 +255,7 @@ fun SubjectSelector(
                     onDismissRequest = {
                         isDropDownExpanded.value = false
                     },
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxWidth()
                 ) {
                     subjects.forEachIndexed { index, subject ->
                         DropdownMenuItem(text = {

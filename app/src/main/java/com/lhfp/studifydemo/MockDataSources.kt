@@ -133,13 +133,15 @@ class MockDataSources {
         private val QUIZ_1_QUESTIONS = listOf(
             QuestionWithOptions(
                 question = Question(
-                    text = "Question 1",
+                    text = LoremIpsum(15).values.last(),
                     quizOwnerId = 1,
                     questionType = 1
                 ),
                 options = listOf(
-                    Option(answer = "Option 1", isCorrect = true, questionOwnerId = 1),
-                    Option(answer = "Option 2", isCorrect = false, questionOwnerId = 1)
+                    Option(answer = LoremIpsum(15).values.last(), isCorrect = true, questionOwnerId = 1),
+                    Option(answer = "Option 2", isCorrect = false, questionOwnerId = 1),
+                    Option(answer = LoremIpsum(15).values.last(), isCorrect = false, questionOwnerId = 1),
+                    Option(answer = LoremIpsum(15).values.last(), isCorrect = false, questionOwnerId = 1)
                 )
             ),
             QuestionWithOptions(
