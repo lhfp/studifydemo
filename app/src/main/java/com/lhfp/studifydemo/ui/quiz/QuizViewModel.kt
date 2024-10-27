@@ -46,10 +46,16 @@ class QuizViewModel @Inject constructor (private val quizUseCases: QuizUseCases)
         }.launchIn(viewModelScope)
     }
 
-    fun generateQuiz(subjectContent: String, subjectId: Int) {
+    fun generateQuiz(subjectWithNotes: SubjectWithNotes, subjectId: Int) {
         Log.i("QUIZ GENERATOR::", "Generating quiz...")
         _quizListState.value = _quizListState.value.copy(uiState = UIState.Loading)
-
+        var subjectContent = ""
+        runCatching {
+            subjectContent = getSubjectContent(subjectWithNotes)
+        }.onFailure {
+            _quizListState.value = _quizListState.value.copy(uiState = UIState.Error(it.message))
+        }
+        if (subjectContent.isEmpty()) return
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val response = generativeModel.generateContent(content {
@@ -163,5 +169,5 @@ class QuizViewModel @Inject constructor (private val quizUseCases: QuizUseCases)
 
 class SubjectContentTooShortException() : Throwable() {
     override val message: String
-        get() = "Subject content is too short"
+        get() = "The content for this subject is too short to generate a quiz. Please add more notes to use this function"
 }

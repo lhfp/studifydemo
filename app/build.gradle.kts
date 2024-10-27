@@ -15,7 +15,7 @@ android {
         applicationId = "com.lhfp.studifydemo"
         minSdk = 24
         targetSdk = 34
-        versionName = "1.0-alpha"
+        versionName = "1.0-beta"
         setProperty("archivesBaseName", "studify-$versionName")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

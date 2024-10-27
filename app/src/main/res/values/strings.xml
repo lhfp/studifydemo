@@ -20,4 +20,9 @@
 
     <!-- Note -->
     <string name="empty_note_title">Empty Title</string>"
+
+    <!-- Loading -->
+    <string name="loading">Loading…</string>
+    <string name="reading_notes">Reading your notes…</string>
+    <string name="generating_questions">Generating questions…</string>
 </resources>

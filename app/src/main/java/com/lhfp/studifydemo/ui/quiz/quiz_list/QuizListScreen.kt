@@ -15,19 +15,22 @@ import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Error
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedButton
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -59,9 +62,7 @@ fun QuizListScreen(
         onQuizCreate = { selectedSubjectIndex ->
             val selectedSubjectId = subjectsList[selectedSubjectIndex].subjectId
             quizViewModel.generateQuiz(
-                subjectContent = quizViewModel.getSubjectContent(
-                    subjectsViewModel.state.value.subjectsWithNotes[selectedSubjectIndex]
-                ),
+                subjectsViewModel.state.value.subjectsWithNotes[selectedSubjectIndex],
                 subjectId = selectedSubjectId,
             )
         },
@@ -70,7 +71,11 @@ fun QuizListScreen(
                 selectedQuizIndex.value = it
                 openQuizAlertDialog.value = true
             } else openCompletedQuizAlertDialog.value = true
-        })
+        },
+        dismissErrorDialog = {
+            quizViewModel.onUIEvent(UIState.Initial)
+        }
+    )
 
     when {
         openQuizAlertDialog.value -> {
@@ -83,9 +88,10 @@ fun QuizListScreen(
                 onConfirm = {
                     selectedQuizIndex.value?.let {
                         Log.i("QuizListScreen", "opening QuizScreen with ID $it")
-                        onQuizOpen(it)
                         openQuizAlertDialog.value = false
                         selectedQuizIndex.value = null
+                        onQuizOpen(it)
+                        quizViewModel.onUIEvent(UIState.Initial)
                     }
                 },
             )
@@ -105,15 +111,45 @@ fun QuizListContent(
     subjects: List<Subject>,
     modifier: Modifier = Modifier,
     onQuizClick: (Int) -> Unit,
-    onQuizCreate: (Int) -> Unit = {}
+    onQuizCreate: (Int) -> Unit = {},
+    dismissErrorDialog: () -> Unit = {}
 ) {
     val selectedSubjectIndex = remember {
         mutableIntStateOf(0)
     }
 
-    Column(modifier.padding(vertical = 10.dp)) {
+    Column(modifier.padding(top = 15.dp)) {
         AnimatedVisibility(visible = quizListState.uiState == UIState.Loading) {
             QuizLoading()
+        }
+
+        if (quizListState.uiState is UIState.Error) {
+            AnimatedVisibility(visible = true) {
+                AlertDialog(
+                    onDismissRequest = {
+                        dismissErrorDialog()
+                    },
+                    confirmButton = {
+                        TextButton(onClick = { dismissErrorDialog() }) {
+                            Text(
+                                text = "OK",
+                                style = MaterialTheme.typography.titleMedium.copy(color = MaterialTheme.colorScheme.secondary)
+                            )
+                        }
+                    },
+                    title = { Text(text = "Error") },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Filled.Error,
+                            contentDescription = "",
+                            tint = Color.White
+                        )
+                    },
+                    text = {
+                        Text(text = (quizListState.uiState as UIState.Error).message.toString())
+                    }
+                )
+            }
         }
 
         when (quizListState.uiState) {
@@ -208,7 +244,7 @@ fun QuizListHeader(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier.padding(horizontal = 10.dp)
     ) {
-        FilledTonalButton(onClick = onQuizCreateButton) {
+        ElevatedButton(onClick = onQuizCreateButton) {
             Icon(imageVector = Icons.Filled.Add, contentDescription = "")
             Text(text = "New Quiz")
         }

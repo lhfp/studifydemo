@@ -13,5 +13,5 @@ sealed interface UIState {
     data object Loading : UIState
     data class Success(val quizJson: String) : UIState
     data class OnQuizReady(val newQuizId: Int) : UIState
-    data class Error(val message: String) : UIState
+    data class Error(val message: String?) : UIState
 }
