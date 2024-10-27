@@ -1,9 +1,12 @@
 package com.lhfp.studifydemo.ui.quiz
 
 import android.content.res.Configuration
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,6 +21,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.NavigateNext
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -29,7 +33,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -37,7 +40,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -48,13 +50,13 @@ import com.lhfp.studifydemo.MockDataSources
 import com.lhfp.studifydemo.domain.model.Option
 import com.lhfp.studifydemo.domain.model.QuestionWithOptions
 import com.lhfp.studifydemo.domain.model.QuizWithQuestions
+import com.lhfp.studifydemo.ui.quiz.components.QuestionAnswerResult
 import com.lhfp.studifydemo.ui.theme.StudifyDemoTheme
 
 @Composable
 fun QuizScreen(
     quizId: Int,
     navigateBack: () -> Unit,
-    modifier: Modifier = Modifier,
     quizViewModel: QuizViewModel = hiltViewModel()
 ) {
     StudifyDemoTheme {
@@ -62,7 +64,16 @@ fun QuizScreen(
             quizViewModel.quizListState.value.quizzes.find { it.quiz.quizId == quizId }
         currentQuiz?.let {
             QuizScreenContent(
-                quiz = it
+                quiz = it,
+                navigateBack = navigateBack,
+                onQuestionConfirm = { question, option ->
+
+                },
+                finishQuiz = {
+                    quizViewModel.finishQuiz(it).invokeOnCompletion {
+                        navigateBack()
+                    }
+                }
             )
         }
     }
@@ -70,7 +81,10 @@ fun QuizScreen(
 
 @Composable
 fun QuizScreenContent(
-    quiz: QuizWithQuestions
+    quiz: QuizWithQuestions,
+    navigateBack: () -> Unit,
+    onQuestionConfirm: (question: QuestionWithOptions, option: Option) -> Unit,
+    finishQuiz: () -> Unit,
 ) {
     val currentQuizIndex = remember {
         mutableIntStateOf(0)
@@ -84,12 +98,16 @@ fun QuizScreenContent(
         mutableStateOf<Int?>(null)
     }
 
+    val isAnswerVerified = remember {
+        mutableStateOf(false)
+    }
+
     Scaffold(topBar = {
         QuizHeader(
             quizTitle = quiz.quiz.name,
             progress = quizProgress.floatValue,
             onBackClick = {
-
+                navigateBack()
             }
         )
     }) { padding ->
@@ -102,14 +120,36 @@ fun QuizScreenContent(
                 },
                 selectedOptionIndex = selectedOptionIndex.value,
                 onOptionConfirm = {
-                    val questionsSize = quiz.questions.count()
+                    if (isAnswerVerified.value) {
+                        val currentQuestion = quiz.questions[currentQuizIndex.intValue]
+                        val currentOptionSelected: Option? = selectedOptionIndex.value?.let {
+                            currentQuestion.options[it]
+                        }
 
-                    if ((currentQuizIndex.intValue + 1) < questionsSize) {
-                        selectedOptionIndex.value = null
-                        currentQuizIndex.intValue += 1
-                        quizProgress.floatValue = (currentQuizIndex.intValue.toFloat() / questionsSize)
+                        currentOptionSelected?.let { optionSelected ->
+                            onQuestionConfirm(
+                                quiz.questions[currentQuizIndex.intValue],
+                                optionSelected
+                            )
+
+                            val questionsSize = quiz.questions.count()
+
+                            if ((currentQuizIndex.intValue + 1) < questionsSize) {
+                                selectedOptionIndex.value = null
+                                currentQuizIndex.intValue += 1
+                                quizProgress.floatValue =
+                                    (currentQuizIndex.intValue.toFloat() / questionsSize)
+                            } else {
+                                quizProgress.floatValue = 1f
+                                finishQuiz()
+                            }
+                        }
+                        isAnswerVerified.value = false
+                    } else {
+                        isAnswerVerified.value = true
                     }
-                }
+                },
+                isAnswerVerified = isAnswerVerified.value
             )
         }
     }
@@ -152,7 +192,6 @@ fun QuizHeader(
                     .padding(horizontal = 10.dp)
             )
         }
-
     }
 }
 
@@ -162,49 +201,77 @@ fun QuestionView(
     onOptionSelected: (Option) -> Unit,
     onOptionConfirm: () -> Unit,
     selectedOptionIndex: Int?,
+    isAnswerVerified: Boolean,
     modifier: Modifier = Modifier
 ) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier
-            .fillMaxHeight(0.86f)
-            .padding(vertical = 10.dp, horizontal = 10.dp)
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(bottom = 20.dp)
     ) {
-        Text(
-            text = question.question.text,
-            style = MaterialTheme.typography.titleLarge.copy(fontSize = 20.sp),
-            textAlign = TextAlign.Center
-        )
-        OptionsView(
-            options = question.options,
-            onOptionSelected = onOptionSelected,
-            selectedOptionIndex = selectedOptionIndex,
-            modifier = Modifier
-                .fillMaxHeight(0.9f)
-        )
-    }
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Button(
-            shape = RoundedCornerShape(5.dp),
-            modifier = Modifier
-                .fillMaxWidth(0.8f)
-                .height(60.dp),
-            onClick = onOptionConfirm,
-            enabled = selectedOptionIndex != null
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = modifier
+                .fillMaxHeight(0.8f)
+                .padding(vertical = 10.dp, horizontal = 10.dp)
         ) {
             Text(
-                text = "Next",
-                Modifier.weight(0.8f),
-                style = MaterialTheme.typography.headlineMedium
+                text = question.question.text,
+                style = MaterialTheme.typography.titleLarge.copy(fontSize = 20.sp),
+                textAlign = TextAlign.Center
             )
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.NavigateNext,
-                contentDescription = "",
-                modifier = Modifier.weight(0.2f)
+            OptionsView(
+                options = question.options,
+                onOptionSelected = onOptionSelected,
+                selectedOptionIndex = selectedOptionIndex,
+                isEnabled = !isAnswerVerified,
+                modifier = Modifier
+                    .fillMaxHeight()
             )
+        }
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+        ) {
+            AnimatedVisibility(
+                visible = isAnswerVerified,
+                enter = fadeIn(
+                    animationSpec = tween(
+                        durationMillis = 500,
+                        easing = FastOutSlowInEasing
+                    )
+                )
+            ) {
+                val correctOption = question.options.find { it.isCorrect }
+                selectedOptionIndex?.let {
+                    QuestionAnswerResult(
+                        isCorrect = question.options[selectedOptionIndex].isCorrect,
+                        correctAnswer = correctOption?.answer ?: "",
+                        modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp)
+                    )
+                }
+            }
+            Button(
+                shape = RoundedCornerShape(5.dp),
+                modifier = Modifier
+                    .fillMaxWidth(0.8f)
+                    .height(60.dp),
+                onClick = onOptionConfirm,
+                enabled = selectedOptionIndex != null
+            ) {
+                Text(
+                    text = if (isAnswerVerified) "Next question" else "Verify",
+                    Modifier.weight(0.8f),
+                    style = MaterialTheme.typography.headlineMedium
+                )
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.NavigateNext,
+                    contentDescription = "",
+                    modifier = Modifier.weight(0.2f)
+                )
+            }
         }
     }
 }
@@ -214,6 +281,7 @@ fun OptionsView(
     options: List<Option>,
     onOptionSelected: (Option) -> Unit,
     selectedOptionIndex: Int?,
+    isEnabled: Boolean,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -227,7 +295,7 @@ fun OptionsView(
             OptionView(
                 option = option,
                 isSelected = selectedOptionIndex == index,
-                onClick = { onOptionSelected(option) }
+                onClick = { if (isEnabled) onOptionSelected(option) }
             )
         }
     }
@@ -269,7 +337,10 @@ fun OptionView(
 private fun QuizScreenContentPreview() {
     StudifyDemoTheme {
         QuizScreenContent(
-            quiz = MockDataSources.QUIZ_WITH_QUESTIONS_LIST[0]
+            quiz = MockDataSources.QUIZ_WITH_QUESTIONS_LIST[0],
+            navigateBack = {},
+            onQuestionConfirm = { _, _ -> },
+            finishQuiz = {}
         )
     }
 }

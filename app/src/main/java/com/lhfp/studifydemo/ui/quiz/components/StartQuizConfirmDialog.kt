@@ -15,7 +15,7 @@ import com.lhfp.studifydemo.ui.theme.StudifyDemoTheme
 @Composable
 fun StartQuizConfirmDialog(
     onDismiss: () -> Unit,
-    onConfirm: () -> Unit,
+    onConfirm: () -> Unit
 ) {
     AlertDialog(
         onDismissRequest = { onDismiss() },
@@ -43,7 +43,7 @@ fun StartQuizConfirmDialog(
         },
         text = {
             Text(
-                text = "Your quiz contains questions up to notes from {INSERT DAY HERE}."
+                text = "10 multiple choice questions about the subject you have selected!"
             )
         },
         icon = {

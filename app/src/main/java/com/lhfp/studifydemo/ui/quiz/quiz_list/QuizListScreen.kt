@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CutCornerShape
@@ -33,12 +31,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.PopupProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.lhfp.studifydemo.MockDataSources
 import com.lhfp.studifydemo.domain.model.Subject
 import com.lhfp.studifydemo.ui.quiz.QuizViewModel
 import com.lhfp.studifydemo.ui.quiz.UIState
+import com.lhfp.studifydemo.ui.quiz.components.CompletedQuizAlertDialog
 import com.lhfp.studifydemo.ui.quiz.components.QuizLoading
 import com.lhfp.studifydemo.ui.quiz.components.StartQuizConfirmDialog
 import com.lhfp.studifydemo.ui.subjects.SubjectsViewModel
@@ -52,11 +50,11 @@ fun QuizListScreen(
     subjectsViewModel: SubjectsViewModel = hiltViewModel()
 ) {
     val subjectsList = subjectsViewModel.state.value.subjectsWithNotes.map { it.subject }
-    val openAlertDialog = remember { mutableStateOf(false) }
+    val openQuizAlertDialog = remember { mutableStateOf(false) }
+    val openCompletedQuizAlertDialog = remember { mutableStateOf(false) }
     val selectedQuizIndex = remember { mutableStateOf<Int?>(null) }
 
-    QuizListContent(
-        quizListState = quizViewModel.quizListState.value,
+    QuizListContent(quizListState = quizViewModel.quizListState.value,
         subjects = subjectsList,
         onQuizCreate = { selectedSubjectIndex ->
             val selectedSubjectId = subjectsList[selectedSubjectIndex].subjectId
@@ -68,16 +66,17 @@ fun QuizListScreen(
             )
         },
         onQuizClick = {
-            selectedQuizIndex.value = it
-            openAlertDialog.value = true
-        }
-    )
+            if (it != -1) {
+                selectedQuizIndex.value = it
+                openQuizAlertDialog.value = true
+            } else openCompletedQuizAlertDialog.value = true
+        })
 
     when {
-        openAlertDialog.value -> {
+        openQuizAlertDialog.value -> {
             StartQuizConfirmDialog(
                 onDismiss = {
-                    openAlertDialog.value = false
+                    openQuizAlertDialog.value = false
                     selectedQuizIndex.value = null
                     quizViewModel.onUIEvent(UIState.Initial)
                 },
@@ -85,11 +84,17 @@ fun QuizListScreen(
                     selectedQuizIndex.value?.let {
                         Log.i("QuizListScreen", "opening QuizScreen with ID $it")
                         onQuizOpen(it)
-                        openAlertDialog.value = false
+                        openQuizAlertDialog.value = false
                         selectedQuizIndex.value = null
                     }
-                }
+                },
             )
+        }
+
+        openCompletedQuizAlertDialog.value -> {
+            CompletedQuizAlertDialog(onDismiss = {
+                openCompletedQuizAlertDialog.value = false
+            })
         }
     }
 }
@@ -111,45 +116,41 @@ fun QuizListContent(
             QuizLoading()
         }
 
-        when(quizListState.uiState) {
+        when (quizListState.uiState) {
             UIState.Loading -> return
             is UIState.OnQuizReady -> {
                 onQuizClick((quizListState.uiState as UIState.OnQuizReady).newQuizId)
             }
+
             else -> {}
         }
 
 
         if (quizListState.quizzes.isEmpty()) {
-            EmptyQuizContent(
-                subjects = subjects,
+            EmptyQuizContent(subjects = subjects,
                 onSubjectSelected = { selectedSubjectIndex.intValue = it },
                 onQuizCreate = {
                     onQuizCreate(selectedSubjectIndex.intValue)
-                }
-            )
+                })
         } else {
-            QuizListHeader(
-                subjects,
+            QuizListHeader(subjects,
                 onSubjectSelected = { selectedSubjectIndex.intValue = it },
-                onQuizCreateButton = { onQuizCreate(selectedSubjectIndex.intValue) }
-            )
+                onQuizCreateButton = { onQuizCreate(selectedSubjectIndex.intValue) })
 
             LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
+                modifier = Modifier.fillMaxSize()
             ) {
-                items(
-                    items = quizListState.quizzes,
-                    key = { it.quiz.quizId }
-                ) { quizWithQuestions ->
+                items(items = quizListState.quizzes,
+                    key = { it.quiz.quizId }) { quizWithQuestions ->
                     subjects.find { subject -> subject.subjectId == quizWithQuestions.quiz.subjectId }
                         ?.let {
-                            QuizItemView(
-                                quizWithQuestions = quizWithQuestions,
+                            QuizItemView(quizWithQuestions = quizWithQuestions,
                                 subject = it,
-                                onClick = { onQuizClick(quizWithQuestions.quiz.quizId) }
-                            )
+                                onClick = {
+                                    if (!quizWithQuestions.quiz.isCompleted) {
+                                        onQuizClick(quizWithQuestions.quiz.quizId)
+                                    } else onQuizClick(-1)
+                                })
                         }
                 }
             }
@@ -187,8 +188,7 @@ fun EmptyQuizContent(
         )
 
         ElevatedButton(
-            shape = CutCornerShape(5.dp),
-            onClick = onQuizCreate
+            shape = CutCornerShape(5.dp), onClick = onQuizCreate
         ) {
             Icon(imageVector = Icons.Filled.Add, contentDescription = "")
             Text(text = "Create new Quiz")
@@ -220,9 +220,7 @@ fun QuizListHeader(
 
 @Composable
 fun SubjectSelector(
-    subjects: List<Subject>,
-    onSubjectSelected: (Int) -> Unit,
-    modifier: Modifier = Modifier
+    subjects: List<Subject>, onSubjectSelected: (Int) -> Unit, modifier: Modifier = Modifier
 ) {
     val isDropDownExpanded = remember { mutableStateOf(false) }
     val itemPosition = remember {
@@ -236,26 +234,22 @@ fun SubjectSelector(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Row(
-                horizontalArrangement = Arrangement.Center,
+            Row(horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = modifier
                     .fillMaxWidth()
                     .clickable {
                         isDropDownExpanded.value = true
-                    }
-            ) {
+                    }) {
                 Text(
                     text = subjects[itemPosition.intValue].name,
                     style = MaterialTheme.typography.headlineMedium
                 )
                 Icon(imageVector = Icons.Filled.ArrowDropDown, contentDescription = "")
                 DropdownMenu(
-                    expanded = isDropDownExpanded.value,
-                    onDismissRequest = {
+                    expanded = isDropDownExpanded.value, onDismissRequest = {
                         isDropDownExpanded.value = false
-                    },
-                    modifier = Modifier.fillMaxWidth()
+                    }, modifier = Modifier.fillMaxWidth()
                 ) {
                     subjects.forEachIndexed { index, subject ->
                         DropdownMenuItem(text = {
@@ -276,13 +270,11 @@ fun SubjectSelector(
 @Composable
 private fun QuizListPreview() {
     StudifyDemoTheme {
-        QuizListContent(
-            quizListState = QuizListState(
-                quizzes = MockDataSources.QUIZ_WITH_QUESTIONS_LIST
-            ),
+        QuizListContent(quizListState = QuizListState(
+            quizzes = MockDataSources.QUIZ_WITH_QUESTIONS_LIST
+        ),
             subjects = MockDataSources.SUBJECT_WITH_NOTES_LIST.map { it.subject },
-            onQuizClick = {}
-        )
+            onQuizClick = {})
     }
 }
 
@@ -290,12 +282,10 @@ private fun QuizListPreview() {
 @Composable
 private fun QuizListEmptyPreview() {
     StudifyDemoTheme {
-        QuizListContent(
-            quizListState = QuizListState(
-                quizzes = emptyList()
-            ),
+        QuizListContent(quizListState = QuizListState(
+            quizzes = emptyList()
+        ),
             subjects = MockDataSources.SUBJECT_WITH_NOTES_LIST.map { it.subject },
-            onQuizClick = {}
-        )
+            onQuizClick = {})
     }
 }

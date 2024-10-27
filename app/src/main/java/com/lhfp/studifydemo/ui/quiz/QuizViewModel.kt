@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.content
+import com.lhfp.studifydemo.domain.model.QuizWithQuestions
 import com.lhfp.studifydemo.domain.model.SubjectWithNotes
 import com.lhfp.studifydemo.domain.usecases.quiz.QuizUseCases
 import com.lhfp.studifydemo.ui.quiz.quiz_list.QuizListState
@@ -92,6 +93,14 @@ class QuizViewModel @Inject constructor (private val quizUseCases: QuizUseCases)
 
     fun onUIEvent(uiState: UIState) {
         _quizListState.value = _quizListState.value.copy(uiState = uiState)
+    }
+
+    fun finishQuiz(quiz: QuizWithQuestions): Job {
+        val newQuiz = quiz.quiz.copy(isCompleted = true, completedAt = System.currentTimeMillis())
+        _quizState.value = _quizState.value.copy(uiState = UIState.Loading)
+        return viewModelScope.launch {
+            quizUseCases.updateQuiz(newQuiz)
+        }
     }
 
     companion object {
